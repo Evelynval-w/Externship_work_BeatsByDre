@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Tracker</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .header {
+            background-color: #4285f4;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .tabs {
+            display: flex;
+            background-color: #f0f0f0;
+            border-bottom: 1px solid #ddd;
+        }
+        .tab {
+            padding: 15px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            text-align: center;
+            flex-grow: 1;
+        }
+        .tab.active {
+            background-color: #fff;
+            border-bottom: 3px solid #4285f4;
+        }
+        .content {
+            display: none;
+            padding: 20px;
+        }
+        .content.active {
+            display: block;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .highlight {
+            background-color: #ffff99;
+            font-weight: bold;
+        }
+        .project-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .project {
+            margin-bottom: 30px;
+        }
+        .project-header {
+            background-color: #e1e1e1;
+            padding: 15px;
+            font-weight: bold;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+        .project-header:hover {
+            background-color: #d5d5d5;
+        }
+        .project-title {
+            font-size: 18px;
+        }
+        .project-time {
+            font-size: 14px;
+            color: #666;
+        }
+        .steps {
+            padding-left: 20px;
+            margin-top: 5px;
+            display: none;
+        }
+        .step {
+            margin-bottom: 15px;
+        }
+        .step-header {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        .step-title {
+            margin-right: 15px;
+        }
+        .step-title {
+            margin-left: 10px;
+        }
+        .step-date {
+            font-size: 14px;
+            color: #666;
+            margin-left: auto;
+        }
+        .subtasks {
+            margin-left: 25px;
+            margin-top: 5px;
+            display: none;
+        }
+        .subtask {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: flex-start;
+        }
+        .subtask-checkbox {
+            margin-right: 10px;
+            margin-top: 3px;
+        }
+        .completed {
+            text-decoration: line-through;
+            color: #888;
+        }
+        .date-input {
+            font-size: 14px;
+            padding: 3px 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-left: 10px;
+            width: 110px;
+        }
+        .visible {
+            display: block;
+        }
+        .project-container {
+            padding: 20px;
+        }
+        .save-button {
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .save-button:hover {
+            background-color: #3367d6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Project Tracker</h1>
+        </div>
+        
+        <div class="tabs">
+            <div class="tab active" onclick="showTab('time-commitment')">Time Commitment</div>
+            <div class="tab" onclick="showTab('progress-tracker')">Progress Tracker</div>
+        </div>
+        
+        <div id="time-commitment" class="content active">
+            <h2>Time Commitment Overview</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Project #</th>
+                        <th>How many <span class="highlight">weeks</span> should you spend on this project?</th>
+                        <th>How many <span class="highlight">hours in a week</span> should you spend on this project?</th>
+                        <th>How many <span class="highlight">hours per day</span> should you spend on this project?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Project 0: Orientation</td>
+                        <td>1 week</td>
+                        <td>1 hour per week</td>
+                        <td>0.5-1 hour per day</td>
+                    </tr>
+                    <tr>
+                        <td>Project 1: Learn Why Customer Insights Matter</td>
+                        <td>1 week</td>
+                        <td>7-8 hours per week</td>
+                        <td>1.5-2 hours per day</td>
+                    </tr>
+                    <tr>
+                        <td>Project 2: Analyze Consumer Insights Gathered</td>
+                        <td>4 weeks</td>
+                        <td>3-4 hours per week</td>
+                        <td>1.5-2 hours per day</td>
+                    </tr>
+                    <tr>
+                        <td>Project 3: Conduct Sentiment Analysis</td>
+                        <td>4 weeks</td>
+                        <td>9-10 hours in a week</td>
+                        <td>1.5-2 hours per day</td>
+                    </tr>
+                    <tr>
+                        <td>Project 4: Share Customer Insights</td>
+                        <td>3 weeks</td>
+                        <td>6-7 hours per week</td>
+                        <td>1.5-2 hours per day</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div style="padding: 10px 15px; background-color: #fffde7; border-left: 4px solid #ffd600; margin-bottom: 20px;">
+                <p><strong>Note:</strong> The time commitment listed here provides a guideline for how to allocate your time across projects. Make sure to adjust based on your own pace and schedule.</p>
+            </div>
+        </div>
+        
+        <div id="progress-tracker" class="content">
+            <h2>Project Progress Tracker</h2>
+            <p>Click on a project or step to expand/collapse. Mark tasks as complete by checking the box.</p>
+            <div class="project-container">
+                <ul class="project-list" id="projectList">
+                    <!-- Projects will be populated by JavaScript -->
+                </ul>
+            </div>
+            <button class="save-button" onclick="saveProgress()">Save Progress</button>
+        </div>
+    </div>
+
+    <script>
+        // Project data structure
+        const projectData = [
+            {
+                id: 0,
+                title: "Orientation",
+                time: "1 hour",
+                steps: [
+                    {
+                        title: "Getting Started",
+                        time: "20 minutes",
+                        date: "",
+                        subtasks: [
+                            "Getting Started",
+                            "Your Host Company",
+                            "Your Externship Journey",
+                            "Define Your Career Vision"
+                        ]
+                    },
+                    {
+                        title: "Meet the People You Will Work With",
+                        time: "30 minutes",
+                        date: "",
+                        subtasks: [
+                            "[Training] The Power of Networking",
+                            "[Task] Connect With the Extern Community"
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 1,
+                title: "Learn Why Customer Insights Matter",
+                time: "5 hours 40 minutes",
+                steps: [
+                    {
+                        title: "Learn About Customer Insights",
+                        time: "1 hour",
+                        date: "",
+                        subtasks: [
+                            "1.1 Know the Difference: Consumer v/s customer",
+                            "1.2 Know What Are Consumer Insights",
+                            "1.3 Make an 'Ideal Consumer List'"
+                        ]
+                    },
+                    {
+                        title: "Learn About Customer Journey and Decision Making",
+                        time: "2 hours",
+                        date: "",
+                        subtasks: [
+                            "2.1 Know What Is A Customer Journey Map",
+                            "2.2 Learn How to Create a Customer Journey Map Using AIDA Framework",
+                            "2.3 Map the Customer Journey"
+                        ]
+                    },
+                    {
+                        title: "Know How Consumer Insights are Gathered",
+                        time: "1 hour 15 minutes",
+                        date: "",
+                        subtasks: [
+                            "3.1 Know About Data Collection Methods",
+                            "3.2 Know the Importance of a Main Research Question to Collect Consumer Insights",
+                            "3.3 Know About Frameworks To Analyze Research Questions",
+                            "3.4 Analyze the Research Question",
+                            "3.5 Learn How To Use AI to Analyze the Research Question",
+                            "3.6 Analyze the Main Research Question Using AI"
+                        ]
+                    },
+                    {
+                        title: "Conduct a Basic Analysis of Consumer Insights",
+                        time: "1 hour 25 minutes",
+                        date: "",
+                        subtasks: [
+                            "4.1 Learn How to Use AI to Gather and Analyze Consumer Insights Through Social Media",
+                            "4.2 Gather and Analyze Consumer Insights Through Social Media Using AI"
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 2,
+                title: "Analyze Consumer Insights Gathered",
+                time: "14 hours 10 minutes",
+                steps: [
+                    {
+                        title: "Access Your Survey Responses",
+                        time: "1 hour 10 minutes",
+                        date: "",
+                        subtasks: [
+                            "1.1 Familiarize Yourself With the Survey",
+                            "1.2 Learn How to See the Auto-Generated Survey Analysis",
+                            "1.3 Familiarize Yourself With the Dataset",
+                            "1.4 Know About the Basics of Data Analysis",
+                            "1.5 Know the Basics of Cleaning and Preparing the Data for Analysis",
+                            "1.6 Clean the Dataset"
+                        ]
+                    },
+                    {
+                        title: "Conduct Quantitative Data Analysis",
+                        time: "3 hours 20 minutes",
+                        date: "",
+                        subtasks: [
+                            "2.1 Know More About Quantitative Data Analysis Part I",
+                            "2.2 Conduct Basic Quantitative Data Analysis",
+                            "2.3 Know More About Quantitative Data Analysis Part II",
+                            "2.4 Conduct Intermediate Quantitative Data Analysis",
+                            "2.5 Know More About Quantitative Data Analysis Part III",
+                            "2.6 Conduct Final Quantitative Data Analysis"
+                        ]
+                    },
+                    {
+                        title: "Conduct Qualitative Data Analysis",
+                        time: "1 hour 40 minutes",
+                        date: "",
+                        subtasks: [
+                            "3.1 Know About Qualitative Data Analysis",
+                            "3.2 Spot Questions for Qualitative Data Analysis",
+                            "3.3 Learn How to Interpret Open-Ended Questions",
+                            "3.4 Interpret Survey Responses to Open-Ended Questions"
+                        ]
+                    },
+                    {
+                        title: "Visualize Data",
+                        time: "2 hours 40 minutes",
+                        date: "",
+                        subtasks: [
+                            "4.1 Know the Basics of Data Visualization",
+                            "4.2 Learn How to Use Google Sheets for Data Visualization",
+                            "4.3 Visualize Qualitative and Quantitative Analysis Results",
+                            "4.4 Discuss Your Journey So Far With Your Peers"
+                        ]
+                    },
+                    {
+                        title: "Conduct Data Analysis and Visualization Using AI",
+                        time: "5 hours 20 minutes",
+                        date: "",
+                        subtasks: [
+                            "5.1 Know About AI-Driven Data Analysis Plan",
+                            "5.2 Learn How to Create an AI-Driven Data Analysis Plan",
+                            "5.3 Develop a Data Analysis Plan Using AI",
+                            "5.4 Learn How to Conduct AI-Driven Qualitative Data Analysis",
+                            "5.5 Conduct AI-Driven Qualitative Data Analysis",
+                            "5.6 Learn How to Conduct AI-Driven Quantitative Data Analysis",
+                            "5.7 Learn How to Conduct AI-Driven Quantitative Data Analysis",
+                            "5.8 Conduct AI-Driven Quantitative Data Analysis"
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 3,
+                title: "Conduct Sentiment Analysis",
+                time: "31 hours 40 minutes",
+                steps: [
+                    {
+                        title: "Learn What Exploratory Data Analysis And Sentiment Analysis Is",
+                        time: "1 hour",
+                        date: "",
+                        subtasks: [
+                            "1.1 Know What Is Exploratory Data Analysis",
+                            "1.2 Know What Is Sentiment Analysis",
+                            "1.3 Brainstorm EDA and Sentiment Analysis Ideas"
+                        ]
+                    },
+                    {
+                        title: "Learn the Basics of Python",
+                        time: "5 hours 40 minutes",
+                        date: "",
+                        subtasks: [
+                            "2.1 Know How Python Is Used In Data Analysis",
+                            "2.2 Know the Python Essentials",
+                            "2.3 Learn How to Start Using Google Colab",
+                            "2.4 Start a Notebook On Google Colab",
+                            "2.5 Know What You Can Do With Google Colab",
+                            "2.6 Run Python Code on Google Colab",
+                            "2.7 Know About Data Structures in Python",
+                            "2.8 Practice Creating Data Structures",
+                            "2.9 Know What is Control Flow in Python",
+                            "2.10 Practice Control Flow Exercises",
+                            "2.11 Know What Are Functions in Python",
+                            "2.12 Practice Performing Functions",
+                            "2.13 Instructions for Your Upcoming Task",
+                            "2.14 On Google Colab, Provide An Input To Generate An Output"
+                        ]
+                    },
+                    {
+                        title: "Gather and Clean Data",
+                        time: "8 hours",
+                        date: "",
+                        subtasks: [
+                            "3.1 Know About Data Scraping and Data Scraping Tools",
+                            "3.2 Know About OxyLabs",
+                            "3.3 Learn How to Scrape Data Using OxyLabs",
+                            "3.4 Scrape Customer Reviews On Amazon",
+                            "3.5 Know About Pandas",
+                            "3.6 Learn How to Clean Data Using Pandas",
+                            "3.7 Clean the Scraped Data Using Pandas",
+                            "3.8 Know About NumPy",
+                            "3.9 See a Preview of Data Preparation Using NumPy",
+                            "3.10 Practice Preparing Data Using NumPy",
+                            "3.11 Learn How to Prepare Scraped and Cleaned Data for Analysis",
+                            "3.12 Prepare the Scraped Data Using NumPy"
+                        ]
+                    },
+                    {
+                        title: "Conduct Exploratory Data Analysis and Sentiment Analysis",
+                        time: "17 hours",
+                        date: "",
+                        subtasks: [
+                            "4.1 Learn How to Use Pandas to Conduct Exploratory Data Analysis",
+                            "4.2 Conduct EDA for the Scraped, Cleaned and Prepared Data",
+                            "4.3 Know About Matplotlib and/or Seaborn",
+                            "4.4 Learn How to Use Matplotlib and/or Seaborn to Visualize Data",
+                            "4.5 Create Visualizations of EDA Results Using Matplotlib and/or Seaborn",
+                            "4.6 Learn How to Calculate the Correlation Matrix",
+                            "4.7 Calculate the Correlation Matrix",
+                            "4.8 Know About TextBlob",
+                            "4.9 Learn How to Use TextBlob to Conduct Sentiment Analysis",
+                            "4.10 Conduct Sentiment Analysis Using TextBlob",
+                            "4.11 Know How It All Comes Together With Gemini",
+                            "4.12 Learn How to Use Gemini API to Gather Insights from Your Analyses",
+                            "4.13 Share Your Insights"
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 4,
+                title: "Share Customer Insights",
+                time: "11 hours 35 minutes",
+                steps: [
+                    {
+                        title: "Learn the Basics of Crafting Impactful Presentations",
+                        time: "2 hours 30 minutes",
+                        date: "",
+                        subtasks: [
+                            "1.1 Know About the Fundamentals of an Impactful Presentation",
+                            "1.2 Know About the Structure of Individual Slides of a Presentation",
+                            "1.3 Create a Presentation Outline",
+                            "1.4 Share Your Work With a Peer"
+                        ]
+                    },
+                    {
+                        title: "Use AI to Create A Presentation",
+                        time: "4 hours",
+                        date: "",
+                        subtasks: [
+                            "2.1 Learn How to Create a Presentation Plan Using AI",
+                            "2.2 Create Your Presentation Plan Using AI",
+                            "2.3 Learn How to Evaluate Your Presentation Plan Using AI",
+                            "2.4 Evaluate Your Presentation Plan Using AI",
+                            "2.5 Learn How to Create a Presentation Using AI",
+                            "2.6 Learn How to Use Gamma to Generate Charts for Your Presentation",
+                            "2.7 Create Your Own Gamma Presentation"
+                        ]
+                    },
+                    {
+                        title: "Use AI to Create a Data Dashboard",
+                        time: "2 hours 35 minutes",
+                        date: "",
+                        subtasks: [
+                            "3.1 Know About Data Dashboards and Claude",
+                            "3.2 Learn How to Build a Dashboard Using AI",
+                            "3.3 Create Your Own Dashboard Using Claude"
+                        ]
+                    },
+                    {
+                        title: "Present Your Research Findings in a Video",
+                        time: "2 hours 30 minutes",
+                        date: "",
+                        subtasks: [
+                            "4.1 Learn How to Create a Video Presentation",
+                            "4.2 Submit Your Final Output"
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        // Function to toggle visibility
+        function toggleVisibility(element) {
+            element.classList.toggle('visible');
+        }
+
+        // Function to show the selected tab
+        function showTab(tabId) {
+            // Hide all content divs
+            document.querySelectorAll('.content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Deactivate all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Activate the selected tab and content
+            document.getElementById(tabId).classList.add('active');
+            document.querySelector(`.tab[onclick="showTab('${tabId}')"]`).classList.add('active');
+        }
+
+        // Function to render the project list
+        function renderProjects() {
+            const projectList = document.getElementById('projectList');
+            projectList.innerHTML = '';
+            
+            projectData.forEach(project => {
+                const projectElement = document.createElement('li');
+                projectElement.className = 'project';
+                
+                const projectHeader = document.createElement('div');
+                projectHeader.className = 'project-header';
+                projectHeader.onclick = function() {
+                    toggleVisibility(stepsElement);
+                };
+                
+                projectHeader.innerHTML = `
+                    <div class="project-title">Project ${project.id}: ${project.title}</div>
+                    <div class="project-time">(${project.time})</div>
+                `;
+                
+                const stepsElement = document.createElement('ul');
+                stepsElement.className = 'steps';
+                
+                project.steps.forEach(step => {
+                    const stepElement = document.createElement('li');
+                    stepElement.className = 'step';
+                    
+                    const stepHeader = document.createElement('div');
+                    stepHeader.className = 'step-header';
+                    stepHeader.onclick = function() {
+                        toggleVisibility(subtasksElement);
+                    };
+                    
+                    const dateInput = document.createElement('input');
+                    dateInput.type = 'date';
+                    dateInput.className = 'date-input';
+                    dateInput.value = step.date;
+                    dateInput.onchange = function(e) {
+                        step.date = e.target.value;
+                        saveProgress();
+                    };
+                    
+                    stepHeader.innerHTML = `
+                        <div class="step-title">Step: ${step.title} &nbsp;&nbsp;(${step.time})</div>
+                    `;
+                    stepHeader.appendChild(dateInput);
+                    
+                    const subtasksElement = document.createElement('ul');
+                    subtasksElement.className = 'subtasks';
+                    
+                    step.subtasks.forEach((subtask, index) => {
+                        const subtaskElement = document.createElement('li');
+                        subtaskElement.className = 'subtask';
+                        
+                        const checkbox = document.createElement('input');
+                        checkbox.type = 'checkbox';
+                        checkbox.className = 'subtask-checkbox';
+                        checkbox.checked = step.completed && step.completed[index];
+                        checkbox.onchange = function() {
+                            if (!step.completed) step.completed = [];
+                            step.completed[index] = checkbox.checked;
+                            subtaskLabel.classList.toggle('completed', checkbox.checked);
+                            saveProgress();
+                            checkForProjectCompletion();
+                        };
+                        
+                        const subtaskLabel = document.createElement('div');
+                        subtaskLabel.className = 'subtask-label';
+                        subtaskLabel.innerHTML = subtask;
+                        
+                        // Apply completed class if task is checked
+                        if (step.completed && step.completed[index]) {
+                            subtaskLabel.classList.add('completed');
+                        }
+                        
+                        subtaskElement.appendChild(checkbox);
+                        subtaskElement.appendChild(subtaskLabel);
+                        subtasksElement.appendChild(subtaskElement);
+                    });
+                    
+                    stepElement.appendChild(stepHeader);
+                    stepElement.appendChild(subtasksElement);
+                    stepsElement.appendChild(stepElement);
+                });
+                
+                projectElement.appendChild(projectHeader);
+                projectElement.appendChild(stepsElement);
+                projectList.appendChild(projectElement);
+            });
+        }
+
+        // Function to save progress
+        function saveProgress() {
+            localStorage.setItem('projectData', JSON.stringify(projectData));
+        }
+
+        // Function to load progress
+        function loadProgress() {
+            const savedData = localStorage.getItem('projectData');
+            if (savedData) {
+                const loadedData = JSON.parse(savedData);
+                
+                // Copy completion status and dates from saved data
+                loadedData.forEach((loadedProject, projectIndex) => {
+                    loadedProject.steps.forEach((loadedStep, stepIndex) => {
+                        if (projectData[projectIndex] && projectData[projectIndex].steps[stepIndex]) {
+                            projectData[projectIndex].steps[stepIndex].date = loadedStep.date || "";
+                            projectData[projectIndex].steps[stepIndex].completed = loadedStep.completed || [];
+                        }
+                    });
+                });
+            }
+            renderProjects();
+        }
+
+        // Function to check if a project is completed
+        function checkForProjectCompletion() {
+            projectData.forEach(project => {
+                let allCompleted = true;
+                let anyCompleted = false;
+                
+                project.steps.forEach(step => {
+                    if (!step.completed || step.completed.some(status => !status)) {
+                        allCompleted = false;
+                    }
+                    if (step.completed && step.completed.some(status => status)) {
+                        anyCompleted = true;
+                    }
+                });
+                
+                // If all tasks are completed, you could trigger a notification or highlight the project
+                if (allCompleted) {
+                    console.log(`Project ${project.id}: ${project.title} is completed!`);
+                    // Here you could add code to display a congratulatory message
+                }
+                
+                // You can also track partially completed projects
+                if (anyCompleted && !allCompleted) {
+                    console.log(`Project ${project.id}: ${project.title} is in progress.`);
+                }
+            });
+        }
+
+        // Initialize the project tracker
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProgress();
+        });
+    </script>
+</body>
+</html>
