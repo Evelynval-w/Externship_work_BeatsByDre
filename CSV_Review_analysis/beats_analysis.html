@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beats Wireless Speaker Strategy</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #333 100%);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .presentation-container {
+            width: 95vw;
+            height: 95vh;
+            max-width: 1400px;
+            max-height: 1000px;
+            position: relative;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .slide {
+            width: 100%;
+            height: 100%;
+            padding: 50px 70px;
+            display: none;
+            flex-direction: column;
+            justify-content: flex-start;
+            position: relative;
+            overflow-y: auto;
+        }
+        
+        .slide.active {
+            display: flex;
+        }
+        
+        /* Slide 1: Title */
+        .title-slide {
+            background: linear-gradient(135deg, #d50000 0%, #ff6b6b 50%, #1a1a1a 100%);
+            color: white;
+            text-align: center;
+        }
+        
+        .beats-logo {
+            font-size: 4em;
+            font-weight: bold;
+            margin-bottom: 30px;
+            color: #fff;
+        }
+        
+        .title-slide h1 {
+            font-size: 3.2em;
+            font-weight: 700;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        
+        .subtitle {
+            font-size: 1.6em;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+        
+        .date-info {
+            font-size: 1.2em;
+            opacity: 0.8;
+        }
+        
+        /* Slide 2: Recommendation */
+        .recommendation-slide {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+            text-align: center;
+        }
+        
+        .recommendation-slide h1 {
+            font-size: 3.5em;
+            font-weight: bold;
+            margin-bottom: 40px;
+            color: white;
+        }
+        
+        .recommendation-box {
+            background: rgba(255, 255, 255, 0.95);
+            color: #2c3e50;
+            padding: 50px;
+            border-radius: 25px;
+            margin: 30px auto;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            max-width: 800px;
+        }
+        
+        .yes-badge {
+            background: #27ae60;
+            color: white;
+            padding: 20px 40px;
+            border-radius: 50px;
+            font-size: 2.2em;
+            font-weight: bold;
+            margin-bottom: 30px;
+            display: inline-block;
+        }
+        
+        .revenue-highlight {
+            font-size: 2.8em;
+            font-weight: bold;
+            color: #d50000;
+            margin: 20px 0;
+        }
+        
+        .strategy-tiers {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            gap: 20px;
+        }
+        
+        .tier {
+            flex: 1;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            text-align: center;
+        }
+        
+        .tier-price {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #d50000;
+        }
+        
+        /* Standard slide styling */
+        .slide h1 {
+            font-size: 2.8em;
+            color: #2c3e50;
+            margin-bottom: 40px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+        
+        .slide h2 {
+            font-size: 2.2em;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+        
+        /* Key metrics grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin: 40px 0;
+            max-width: 800px;
+        }
+        
+        .metric-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            border-left: 8px solid #d50000;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .metric-number {
+            font-size: 4em;
+            font-weight: bold;
+            color: #d50000;
+            margin-bottom: 15px;
+            line-height: 1;
+        }
+        
+        .metric-label {
+            font-size: 1.3em;
+            color: #495057;
+            font-weight: 600;
+        }
+        
+        .metric-detail {
+            font-size: 1em;
+            color: #6c757d;
+            margin-top: 8px;
+        }
+        
+        /* Chart containers */
+        .chart-container {
+            background: #f8f9fa;
+            border-radius: 20px;
+            padding: 40px;
+            margin: 30px 0;
+            border-left: 8px solid #d50000;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .chart-title {
+            font-size: 1.6em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        .chart-canvas {
+            height: 350px !important;
+        }
+        
+        /* Insight boxes */
+        .insight-box {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            border: 3px solid #f39c12;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
+            border-left: 8px solid #f39c12;
+        }
+        
+        .insight-title {
+            font-size: 1.6em;
+            font-weight: bold;
+            color: #856404;
+            margin-bottom: 15px;
+        }
+        
+        .insight-text {
+            color: #856404;
+            font-size: 1.3em;
+            line-height: 1.6;
+        }
+        
+        /* Two column layout */
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+            height: 100%;
+        }
+        
+        /* Feature strategy cards */
+        .feature-cards {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+            margin: 30px 0;
+        }
+        
+        .feature-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 30px;
+            border-radius: 20px;
+            border-left: 8px solid #27ae60;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        
+        .feature-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .feature-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .feature-rating {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #d50000;
+        }
+        
+        .feature-details {
+            color: #495057;
+            font-size: 1.2em;
+            line-height: 1.5;
+        }
+        
+        /* Success metrics */
+        .success-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 40px 0;
+        }
+        
+        .success-card {
+            background: linear-gradient(135deg, #e8f5e8 0%, #c3e6cb 100%);
+            padding: 35px;
+            border-radius: 20px;
+            border-left: 8px solid #28a745;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .success-year {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #155724;
+            margin-bottom: 15px;
+        }
+        
+        .success-targets {
+            color: #155724;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+        
+        /* Navigation */
+        .navigation {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 100;
+        }
+        
+        .nav-btn {
+            padding: 15px 30px;
+            background: #d50000;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(213, 0, 0, 0.3);
+        }
+        
+        .nav-btn:hover {
+            background: #b71c1c;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(213, 0, 0, 0.4);
+        }
+        
+        .nav-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        /* Slide indicators */
+        .slide-indicators {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            display: flex;
+            gap: 10px;
+            z-index: 100;
+        }
+        
+        .indicator {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .indicator.active {
+            background: #d50000;
+            transform: scale(1.3);
+        }
+        
+        .slide-number {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            color: rgba(0,0,0,0.4);
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+        
+        /* Highlight text */
+        .highlight {
+            background: #fff3cd;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: bold;
+            color: #856404;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .presentation-container {
+                width: 98vw;
+                height: 98vh;
+            }
+            
+            .slide {
+                padding: 30px 40px;
+            }
+            
+            .metrics-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .two-column {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .strategy-tiers {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <!-- Slide Indicators -->
+        <div class="slide-indicators">
+            <div class="indicator active" onclick="goToSlide(0)"></div>
+            <div class="indicator" onclick="goToSlide(1)"></div>
+            <div class="indicator" onclick="goToSlide(2)"></div>
+            <div class="indicator" onclick="goToSlide(3)"></div>
+            <div class="indicator" onclick="goToSlide(4)"></div>
+            <div class="indicator" onclick="goToSlide(5)"></div>
+            <div class="indicator" onclick="goToSlide(6)"></div>
+            <div class="indicator" onclick="goToSlide(7)"></div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="navigation">
+            <button class="nav-btn" id="prevBtn" onclick="previousSlide()">← Previous</button>
+            <button class="nav-btn" id="nextBtn" onclick="nextSlide()">Next →</button>
+        </div>
+
+        <!-- Slide 1: Launch Recommendation -->
+        <div class="slide title-slide active">
+            <div class="beats-logo">beats</div>
+            <h1>Launch Three-Tier Speaker Portfolio</h1>
+            <p class="subtitle">$278M Revenue Opportunity</p>
+            <p class="date-info">Strategic Recommendation • December 2024</p>
+            <div class="slide-number">1 / 8</div>
+        </div>
+
+        <!-- Slide 2: Market Reality -->
+        <div class="slide recommendation-slide">
+            <h1>✅ YES - LAUNCH IMMEDIATELY</h1>
+            <div class="recommendation-box">
+                <div class="yes-badge">STRATEGIC RECOMMENDATION</div>
+                <div class="revenue-highlight">$278M Revenue Opportunity</div>
+                <h3 style="margin: 20px 0; font-size: 1.8em;">Three-Tier Portfolio Strategy</h3>
+                <div class="strategy-tiers">
+                    <div class="tier">
+                        <div class="tier-price">$79-99</div>
+                        <div>Entry Tier</div>
+                    </div>
+                    <div class="tier">
+                        <div class="tier-price">$149-199</div>
+                        <div>Mid-Premium</div>
+                    </div>
+                    <div class="tier">
+                        <div class="tier-price">$249-349</div>
+                        <div>Premium Flagship</div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-number">2 / 8</div>
+        </div>
+
+        <!-- Slide 3: Market Reality -->
+        <div class="slide">
+            <h1>Market Reality: Price-Sensitive but Sound-Quality Obsessed</h1>
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-number">66%</div>
+                    <div class="metric-label">Spend <$100</div>
+                    <div class="metric-detail">Price-sensitive market</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-number">4.44</div>
+                    <div class="metric-label">Sound Quality Rating</div>
+                    <div class="metric-detail">Top priority feature</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-number">0.6%</div>
+                    <div class="metric-label">Beats Market Share</div>
+                    <div class="metric-detail">vs JBL's 44%</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-number">47%</div>
+                    <div class="metric-label">Dissatisfied Users</div>
+                    <div class="metric-detail">Switching opportunity</div>
+                </div>
+            </div>
+            <div class="insight-box">
+                <div class="insight-title">Key Insight</div>
+                <div class="insight-text">
+                    <span class="highlight">Quality at accessible price points</span> - Market wants premium audio but needs value positioning. Beats has massive brand awareness gap to close.
+                </div>
+            </div>
+            <div class="slide-number">3 / 8</div>
+        </div>
+
+        <!-- Slide 4: Market Validation -->
+        <div class="slide">
+            <h1>680 Users Validate Strong Market Demand</h1>
+            <div class="chart-container">
+                <div class="chart-title">Purchase Intent & Market Readiness</div>
+                <canvas id="demandChart" class="chart-canvas"></canvas>
+            </div>
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-number">21%</div>
+                    <div class="metric-label">High Purchase Intent</div>
+                    <div class="metric-detail">697 ready-to-buy customers</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-number">61%</div>
+                    <div class="metric-label">High Usage Frequency</div>
+                    <div class="metric-detail">Daily/several times per week</div>
+                </div>
+            </div>
+            <div class="slide-number">4 / 8</div>
+        </div>
+
+        <!-- Slide 5: Target Strategy -->
+        <div class="slide">
+            <h1>Target Youth First, Scale to Premium Later</h1>
+            <div class="chart-container">
+                <div class="chart-title">Age-Based Purchase Intent & Market Size</div>
+                <canvas id="ageChart" class="chart-canvas"></canvas>
+            </div>
+            <div class="insight-box">
+                <div class="insight-title">Strategic Targeting</div>
+                <div class="insight-text">
+                    <span class="highlight">Ages 18-24:</span> 72% of market, entry pricing strategy<br>
+                    <span class="highlight">Ages 45-54:</span> 31% high intent, premium willing<br>
+                    Different age cohorts require different price strategies
+                </div>
+            </div>
+            <div class="slide-number">5 / 8</div>
+        </div>
+
+        <!-- Slide 6: Product Strategy -->
+        <div class="slide">
+            <h1>Product Strategy: Audio Excellence + All-Day Battery</h1>
+            <div class="feature-cards">
+                <div class="feature-card">
+                    <div class="feature-header">
+                        <div class="feature-title">Sound Quality (Non-negotiable)</div>
+                        <div class="feature-rating">4.44/5</div>
+                    </div>
+                    <div class="feature-details">
+                        <strong>Beats audio heritage + superior bass + crystal clarity</strong><br>
+                        Top-rated feature driving all purchase decisions
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-header">
+                        <div class="feature-title">24+ Hour Battery Life</div>
+                        <div class="feature-rating">3.96/5</div>
+                    </div>
+                    <div class="feature-details">
+                        <strong>All-day power + fast charging capability</strong><br>
+                        Second highest priority, addresses key pain point
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-header">
+                        <div class="feature-title">Apple Ecosystem Integration</div>
+                        <div class="feature-rating">KEY</div>
+                    </div>
+                    <div class="feature-details">
+                        <strong>Seamless connectivity + unique differentiation</strong><br>
+                        Leverages Beats-Apple relationship for competitive advantage
+                    </div>
+                </div>
+            </div>
+            <div class="slide-number">6 / 8</div>
+        </div>
+
+        <!-- Slide 7: Feature Priorities -->
+        <div class="slide">
+            <h1>Feature Priorities Drive Product Roadmap</h1>
+            <div class="two-column">
+                <div>
+                    <div class="chart-container">
+                        <div class="chart-title">Feature Importance vs Price Willingness</div>
+                        <canvas id="featureChart" class="chart-canvas"></canvas>
+                    </div>
+                </div>
+                <div>
+                    <div class="insight-box">
+                        <div class="insight-title">The "Quality Trinity"</div>
+                        <div class="insight-text">
+                            <strong>Sound + Battery + Connectivity</strong> form core feature set<br><br>
+                            <span class="highlight">70% more likely</span> to pay premium (sound quality focus)<br><br>
+                            Price importance negatively correlates with premium features
+                        </div>
+                    </div>
+                    <div class="feature-cards">
+                        <div class="feature-card">
+                            <div class="feature-title">User Behavior Insight</div>
+                            <div class="feature-details">
+                                Quality-focused users are significantly more willing to pay premium prices for superior audio experience
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-number">7 / 8</div>
+        </div>
+
+        <!-- Slide 8: Go-to-Market & Success -->
+        <div class="slide">
+            <h1>Success Metrics: 15% Market Share in 24 Months</h1>
+            <div class="two-column">
+                <div>
+                    <h2 style="margin-bottom: 30px;">Go-to-Market Strategy</h2>
+                    <div class="feature-cards">
+                        <div class="feature-card" style="border-left-color: #3498db;">
+                            <div class="feature-title">Amazon-First Distribution</div>
+                            <div class="feature-details">
+                                55% prefer large multi-brand platforms<br>
+                                Focus on review optimization & comparison
+                            </div>
+                        </div>
+                        <div class="feature-card" style="border-left-color: #e74c3c;">
+                            <div class="feature-title">Aggressive Brand Building</div>
+                            <div class="feature-details">
+                                Close 44% awareness gap vs JBL<br>
+                                12-month launch window critical
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h2 style="margin-bottom: 30px;">Success Framework</h2>
+                    <div class="success-grid">
+                        <div class="success-card">
+                            <div class="success-year">Year 1 Targets</div>
+                            <div class="success-targets">
+                                • Entry tier volume leadership<br>
+                                • Brand awareness lift to 15%<br>
+                                • Amazon top 3 ranking
+                            </div>
+                        </div>
+                        <div class="success-card">
+                            <div class="success-year">Year 2 Goals</div>
+                            <div class="success-targets">
+                                • Premium tier margin expansion<br>
+                                • 15% total market share<br>
+                                • Category leadership
+                            </div>
+                        </div>
+                    </div>
+                    <div class="insight-box">
+                        <div class="insight-title">Investment Priority</div>
+                        <div class="insight-text">
+                            Product development + marketing spend focused on audio excellence and brand building
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-number">8 / 8</div>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const totalSlides = 8;
+
+        function showSlide(n) {
+            const slides = document.querySelectorAll('.slide');
+            const indicators = document.querySelectorAll('.indicator');
+            
+            if (n >= totalSlides) currentSlide = 0;
+            if (n < 0) currentSlide = totalSlides - 1;
+            
+            slides.forEach(slide => slide.classList.remove('active'));
+            indicators.forEach(indicator => indicator.classList.remove('active'));
+            
+            slides[currentSlide].classList.add('active');
+            indicators[currentSlide].classList.add('active');
+            
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                showSlide(currentSlide);
+            }
+        }
+
+        function previousSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                showSlide(currentSlide);
+            }
+        }
+
+        function goToSlide(n) {
+            currentSlide = n;
+            showSlide(currentSlide);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === 'ArrowLeft') previousSlide();
+        });
+
+        // Initialize charts
+        window.addEventListener('load', function() {
+            // Market Demand Chart
+            const ctx1 = document.getElementById('demandChart').getContext('2d');
+            new Chart(ctx1, {
+                type: 'doughnut',
+                data: {
+                    labels: ['High Intent (21%)', 'Moderate (21%)', 'Low Intent (58%)'],
+                    datasets: [{
+                        data: [21, 21, 58],
+                        backgroundColor: ['#27ae60', '#f39c12', '#e74c3c'],
+                        borderWidth: 4,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                boxWidth: 20,
+                                padding: 20,
+                                font: { size: 16 }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Age Strategy Chart
+            const ctx2 = document.getElementById('ageChart').getContext('2d');
+            new Chart(ctx2, {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: 'Age Groups',
+                        data: [
+                            {x: 72, y: 19, label: '18-24'},
+                            {x: 18, y: 26, label: '25-34'},
+                            {x: 4, y: 29, label: '35-44'},
+                            {x: 6, y: 31, label: '45-54+'}
+                        ],
+                        backgroundColor: ['#e74c3c', '#f39c12', '#3498db', '#27ae60'],
+                        borderColor: ['#c0392b', '#d68910', '#2980b9', '#229954'],
+                        pointRadius: 15,
+                        pointHoverRadius: 20
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            title: { display: true, text: 'Market Share (%)', font: { size: 16 } },
+                            min: 0,
+                            max: 80
+                        },
+                        y: {
+                            title: { display: true, text: 'Purchase Intent (%)', font: { size: 16 } },
+                            min: 15,
+                            max: 35
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const point = context.raw;
+                                    return `Ages ${point.label}: ${point.x}% market, ${point.y}% intent`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Feature Correlation Chart
+            const ctx3 = document.getElementById('featureChart').getContext('2d');
+            new Chart(ctx3, {
+                type: 'bar',
+                data: {
+                    labels: ['Sound Quality', 'Battery Life', 'Connectivity', 'Durability', 'Design', 'Price'],
+                    datasets: [{
+                        label: 'Importance Rating',
+                        data: [4.44, 3.96, 3.36, 3.21, 2.71, 3.33],
+                        backgroundColor: [
+                            '#d50000',
+                            '#ff6b6b',
+                            '#ff9f43',
+                            '#feca57',
+                            '#48dbfb',
+                            '#0abde3'
+                        ],
+                        borderRadius: 8,
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 5,
+                            title: { display: true, text: 'Importance (1-5 scale)', font: { size: 14 } }
+                        },
+                        x: {
+                            title: { display: true, text: 'Features', font: { size: 14 } }
+                        }
+                    }
+                }
+            });
+
+            showSlide(0);
+        });
+    </script>
+</body>
+</html>
